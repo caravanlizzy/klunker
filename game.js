@@ -117,21 +117,47 @@ class Game {
     doTresor(card) {
 		let tresor = this.getTresor();
 		tresor[card] += 1;
-		this.gainCoins();
+		this.sellAll(tresor);
 	}
 	
 	
-    doKauf() {}
+    doKauf(playerId) { //playerId identifies the player who sells
+		
+	}
     doRundenende() {}
+	
+	sellAll() {
+		let cardSet = this.findCompleteTresor();
+		while(cardSet){
+			this.sellCards(cardSet);
+			cardSet = this.findCompleteTresor();
+		}
+	}
 
-	gainCoins() {
+	sellCards(cardType) {
 		let tresor = this.getTresor();
-		let cardTypes = Object.keys(tresor)
 		let diversity = this.getCardDiversity(tresor);
-		console.log(diversity);
-		cardTypes.forEach(card => {
-			console.log(tresor[card]);
-		})
+		console.log(tresor, diversity);
+		if(tresor[cardType] > 3) {
+			let player = this.getActiveplayer();
+			let coins = Math.max(5-diversity, 1);
+			let returnCards = 4-coins;
+			player.coins += coins;
+			player.tresor[cardType] -= 4;
+			this.pile[cardType] += returnCards;
+		}
+	}
+	
+	findCompleteTresor() {
+		let player = this.getActiveplayer();
+		let cardTypes = Object.keys(deck);
+		for(let i = 0; i < cardTypes.length; i++) {
+			let cardType = cardTypes[i];
+			if(player.tresor[cardType] > 3) {
+				return cardType;
+			}
+		}
+		return false;
 	}
 	
 	getCardDiversity(tresor) {
