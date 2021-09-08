@@ -121,8 +121,9 @@ class Game {
 	}
 	
 	
-    doKauf(playerId) { //playerId identifies the player who sells
-		
+    doKauf(sellerId) {
+		let buyer = this.getActiveplayer();
+		let seller = this.players[playerId
 	}
     doRundenende() {}
 	
