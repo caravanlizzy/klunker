@@ -15,6 +15,15 @@ class Player {
             this.coins = 0;
             this.hand = [];
             this.schaufenster = [];
+			this.tresor = {
+				'red' : 0,
+				'pink' : 0,
+				'green' : 0,
+				'blue' : 0,
+				'yellow' : 0,
+				'purple' : 0,
+				'white' : 0
+			};
     }
 }
 
@@ -43,6 +52,14 @@ class Game {
     getActiveplayer() {
         return this.players[this.activePlayer];
     }
+	
+	getSchaufenster() {
+		return this.getActiveplayer().schaufenster;
+	}
+	
+	getTresor() {
+		return this.getActiveplayer().tresor;
+	}
 
     setupGame() {
         this.createdrawPile();
@@ -86,24 +103,73 @@ class Game {
 
 
 
-    run() {
-        this.doSchaufenster();
-        this.doTresor();
-        this.doKauf();
-        this.doRundenende();
+    doSchaufenster(cards) {
+		let schaufenster = this.getSchaufenster();
+		if(schaufenster.length == 0 && cards.length == 0) {
+			console.log('Schaufenster empty')
+		}
+		else{
+			let newSchaufenster = schaufenster.concat(cards);
+			this.getActiveplayer().schaufenster = newSchaufenster;	
+		}
     }
 
-    doSchaufenster() {
-        this.players.forEach(
-            player => this.getInput();
-        )
-    }
-
-
-
-    doTresor() {}
-    doKauf() {}
+    doTresor(card) {
+		let tresor = this.getTresor();
+		tresor[card] += 1;
+		this.sellAll(tresor);
+	}
+	
+	
+    doKauf(sellerId) {
+		let buyer = this.getActiveplayer();
+		let seller = this.players[playerId
+	}
     doRundenende() {}
+	
+	sellAll() {
+		let cardSet = this.findCompleteTresor();
+		while(cardSet){
+			this.sellCards(cardSet);
+			cardSet = this.findCompleteTresor();
+		}
+	}
+
+	sellCards(cardType) {
+		let tresor = this.getTresor();
+		let diversity = this.getCardDiversity(tresor);
+		console.log(tresor, diversity);
+		if(tresor[cardType] > 3) {
+			let player = this.getActiveplayer();
+			let coins = Math.max(5-diversity, 1);
+			let returnCards = 4-coins;
+			player.coins += coins;
+			player.tresor[cardType] -= 4;
+			this.pile[cardType] += returnCards;
+		}
+	}
+	
+	findCompleteTresor() {
+		let player = this.getActiveplayer();
+		let cardTypes = Object.keys(deck);
+		for(let i = 0; i < cardTypes.length; i++) {
+			let cardType = cardTypes[i];
+			if(player.tresor[cardType] > 3) {
+				return cardType;
+			}
+		}
+		return false;
+	}
+	
+	getCardDiversity(tresor) {
+		let diversity = 0;
+		Object.keys(tresor).forEach( color => {
+			if(tresor[color] > 0){
+				diversity += 1;
+			}
+		})
+		return diversity;
+	}
 
 }
 
