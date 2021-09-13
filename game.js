@@ -12,20 +12,24 @@ const deck = {
 
 class Player {
     constructor(name, id) {
-            this.id = id;
-            this.name = name;
-            this.coins = 0;
-            this.hand = [];
-            this.schaufenster = [];
-			this.tresor = {
-				'red' : 0,
-				'pink' : 0,
-				'green' : 0,
-				'blue' : 0,
-				'yellow' : 0,
-				'purple' : 0,
-				'white' : 0
-			};
+        this.id = id;
+        this.name = name;
+        this.coins = 0;
+        this.hand = [];
+        this.schaufenster = [];
+        this.cleanTresor();
+    }
+
+    cleanTresor() {
+        this.tresor = {
+            'red' : 0,
+            'pink' : 0,
+            'green' : 0,
+            'blue' : 0,
+            'yellow' : 0,
+            'purple' : 0,
+            'white' : 0
+        };
     }
 }
 
@@ -34,6 +38,7 @@ class Game {
         this.phases = ['SCHAUFENSTER', 'TRESOR', 'KAUF', 'RUNDENENDE'];
         this.currentPhase = 0;
         this.activePlayer = 0;
+        this.startingPlayer = 0;
         this.players = [];
         this.pile = [];
     }
@@ -47,7 +52,7 @@ class Game {
     }
 
     addPlayer(name) {
-        let id = this.players.length + 1;
+        let id = this.players.length;
         let player = new Player(name, id);
         this.players.push(player);
     }
@@ -68,7 +73,7 @@ class Game {
         this.createdrawPile();
         this.shufflePile();
         this.dealCards();
-        this.getStartingplayer();
+//         this.shuffleStartingplayer();
     }
 
     createdrawPile(){
@@ -99,7 +104,7 @@ class Game {
         }
     }
 
-    getStartingplayer(){
+    shuffleStartingplayer(){
         this.activePlayer = Math.floor(Math.random() * this.players.length);
     }
 
@@ -121,13 +126,42 @@ class Game {
 	}
 	
 	
-    doKauf(sellerId) {
+    doKauf(sellerId, kauf = true) {
 		let buyer = this.getActiveplayer();
-		let seller = this.players[sellerId];
-
+        if (!kauf) {
+            this.setStartingplayer(buyer.id);
+            console.log('endKauf')
+            return true;
+        }
+        let seller = this.players[sellerId];
+        if(buyer.coins == 0 && buyer.id != sellerId) {
+            return false;
+        }
+        let tresor = this.getTresor();
+        let schaufenster = this.getSchaufenster();
+        buyer.schaufenster = this.addTresor(tresor, schaufenster);
+        buyer.cleanTresor();
+        pay(buyer, seller);
+        return true;
 	}
 
-	
+	addTresor(tresor, schaufenster) {
+        let colors = Object.keys(tresor);
+        for (let c = 0; c < colors.length; c++) {
+            let color = colors[c];
+            let amount = tresor[color];
+            for (let i = 0; i < amount; i++) {
+                schaufenster.push(color);
+            }
+        }
+        return schaufenster;
+    }
+
+    pay(buyer, seller) {
+        buyer.coins -= 1;
+        seller.coins += 1;
+    }
+
 	sellAll() {
 		let cardSet = this.findCompleteTresor();
 		while(cardSet){
@@ -147,10 +181,10 @@ class Game {
 			player.coins += coins;
 			player.tresor[cardType] -= 4;
 			this.pile[cardType] += returnCards;
-		}
+        }
 	}
 	
-	findCompleteTresor() {
+        findCompleteTresor() {
 		let player = this.getActiveplayer();
 		let cardTypes = Object.keys(deck);
 		for(let i = 0; i < cardTypes.length; i++) {
@@ -172,8 +206,17 @@ class Game {
 		return diversity;
 	}
 
-    doRundenende() {
+	setStartingplayer(playerId) {
+        this.startingPlayer = playerId;
+    }
 
+    doRundenende() {
+        if(this.checkOver) {
+            console.log("Game over");
+        }
+        else{
+            this.dealCards();
+        }
     }
 
     checkOver() {
