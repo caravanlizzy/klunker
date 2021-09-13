@@ -10,7 +10,8 @@ const deck = {
 
 
 class Player {
-    constructor(name) {
+    constructor(name, id) {
+            this.id = id;
             this.name = name;
             this.coins = 0;
             this.hand = [];
@@ -45,7 +46,8 @@ class Game {
     }
 
     addPlayer(name) {
-        let player = new Player(name);
+        let id = this.players.length + 1;
+        let player = new Player(name, id);
         this.players.push(player);
     }
 
@@ -88,7 +90,6 @@ class Game {
     }
 
     dealCards(){
-        console.log(this.players.length);
         for (let i = 0; i < this.players.length; i++) {
             let player = this.players[i];
             for(let j = player.hand.length; j < 6; j++) {
@@ -100,8 +101,6 @@ class Game {
     getStartingplayer(){
         this.activePlayer = Math.floor(Math.random() * this.players.length);
     }
-
-
 
     doSchaufenster(cards) {
 		let schaufenster = this.getSchaufenster();
@@ -123,9 +122,10 @@ class Game {
 	
     doKauf(sellerId) {
 		let buyer = this.getActiveplayer();
-		let seller = this.players[playerId
+		let seller = this.players[sellerId];
+
 	}
-    doRundenende() {}
+
 	
 	sellAll() {
 		let cardSet = this.findCompleteTresor();
@@ -170,6 +170,23 @@ class Game {
 		})
 		return diversity;
 	}
+
+    doRundenende() {
+
+    }
+
+    checkOver() {
+        let cardsLeft = this.pile.length;
+        let cardsNeeded = 0;
+        for (let i = 0; i < this.players.length; i++) {
+            let player = this.players[i];
+            cardsNeeded += 6 - player.hand.length;
+        }
+        if (cardsNeeded < cardsLeft) {
+            return true;
+        }
+        return false;
+    }
 
 }
 
