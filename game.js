@@ -9,7 +9,6 @@ const deck = {
 }
 
 
-
 class Player {
     constructor(name, id) {
         this.id = id;
@@ -33,6 +32,7 @@ class Player {
     }
 }
 
+
 class Game {
     constructor() {
         this.phases = ['SCHAUFENSTER', 'TRESOR', 'KAUF', 'RUNDENENDE'];
@@ -41,6 +41,49 @@ class Game {
         this.startingPlayer = 0;
         this.players = [];
         this.pile = [];
+        this.tresorPasses = [];
+    }
+
+    runGame() {
+        this.setupGame();
+        this.schaufensterPhase();
+        this.tresorPhase();
+        this.kaufPhase();
+    }
+
+    setupGame() {
+        this.createdrawPile();
+        this.shufflePile();
+        this.dealCards();
+        this.shuffleStartingplayer();
+    }
+
+    schaufensterPhase() {
+        for(let i = 0; i < this.players.length; i++) {
+            this.playRandomschaufenster();
+        }
+    }
+
+    tresorPhase() {
+        while(this.tresorPasses.length < this.players.length) {
+            let player = this.getActiveplayer();
+            if (player.hand.length == 0 || this.randomPass) {
+                this.doTresor('pass');
+            }
+            else {
+                let cardPos = this.getRandomInt(player.hand.length);
+                this.doTresor(player.hand[cardPos]);
+                player.hand.splice(cardPos, 1);
+            }
+            this.nextPlayer();
+        }
+    }
+
+    randomPass() {
+        if (Math.random() < 0.25) {
+            return true;
+        }
+        return false;
     }
 
     nextPlayer () {
@@ -60,20 +103,40 @@ class Game {
     getActiveplayer() {
         return this.players[this.activePlayer];
     }
-	
-	getSchaufenster() {
-		return this.getActiveplayer().schaufenster;
-	}
-	
+
 	getTresor() {
 		return this.getActiveplayer().tresor;
 	}
 
-    setupGame() {
-        this.createdrawPile();
-        this.shufflePile();
-        this.dealCards();
-//         this.shuffleStartingplayer();
+	getHand() {
+        return this.getActiveplayer().hand;
+    }
+
+    getSchaufenster() {
+		return this.getActiveplayer().schaufenster;
+	}
+
+    setStartingplayer(playerId) {
+        this.startingPlayer = playerId;
+    }
+
+	playRandomschaufenster() {
+        let hand = this.getHand();
+        let amount = this.getRandomInt(6, 1);
+        for (let i = 0; i < amount; i++) {
+            this.getSchaufenster().push(hand.splice(this.getRandomInt(6 - 1), 1)[0]);
+        }
+    }
+
+    doSchaufenster(cards) {
+		let schaufenster = this.getSchaufenster();
+		if(schaufenster.length == 0 && cards.length == 0) {
+			console.log('Schaufenster empty');
+		}
+		else{
+			let newSchaufenster = schaufenster.concat(cards);
+			this.getActiveplayer().schaufenster = newSchaufenster;
+		}
     }
 
     createdrawPile(){
@@ -108,18 +171,13 @@ class Game {
         this.activePlayer = Math.floor(Math.random() * this.players.length);
     }
 
-    doSchaufenster(cards) {
-		let schaufenster = this.getSchaufenster();
-		if(schaufenster.length == 0 && cards.length == 0) {
-			console.log('Schaufenster empty')
-		}
-		else{
-			let newSchaufenster = schaufenster.concat(cards);
-			this.getActiveplayer().schaufenster = newSchaufenster;	
-		}
-    }
-
     doTresor(card) {
+        if (card == 'pass') {
+            this.tresorPasses.push(this.getActiveplayer());
+        }
+        if (this.tresorPasses.includes(this.getActiveplayer()) {
+            return;
+        }
 		let tresor = this.getTresor();
 		tresor[card] += 1;
 		this.sellAll(tresor);
@@ -184,7 +242,7 @@ class Game {
         }
 	}
 	
-        findCompleteTresor() {
+    findCompleteTresor() {
 		let player = this.getActiveplayer();
 		let cardTypes = Object.keys(deck);
 		for(let i = 0; i < cardTypes.length; i++) {
@@ -206,10 +264,6 @@ class Game {
 		return diversity;
 	}
 
-	setStartingplayer(playerId) {
-        this.startingPlayer = playerId;
-    }
-
     doRundenende() {
         if(this.checkOver) {
             console.log("Game over");
@@ -230,6 +284,10 @@ class Game {
             return true;
         }
         return false;
+    }
+
+    getRandomInt(amount, offset = 0) {
+        return Math.floor(Math.random() * amount + offset);
     }
 
 }
