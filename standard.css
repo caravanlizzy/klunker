@@ -6,13 +6,20 @@ body {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: space-evenly;
     
 }
 
 .tableau {
     width: 550px;
     height: 300px;
-    border: solid black 1px;
-/*     margin: 20px; */
+    border: solid #a9a9a9 1px;
+    margin: 7px;
+    border-radius: 7px;
+}
+
+.bar {
+    height: 80px;
+    width: 100%;
+/*     border: 1px solid red; */
 }

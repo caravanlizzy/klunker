@@ -23,13 +23,16 @@ class Graphic {
         this.getTableau(playerId).append(tresor);
     }
     
-    drawStatusBar(playerId) {
+    drawBar(playerId) {
         let bar = document.createElement('div');
         let className = 'bar';
         bar.className = className;
         bar.id = className + playerId;
         this.getTableau(playerId).append(bar);
     }
+    
+    drawName(playerId, name) {}
+
     
     getBar(playerId) {
         return document.getElementById('bar' + playerId);
@@ -53,4 +56,9 @@ class Graphic {
     }
     
     updateCoins(playerId) {}
+    
+    drawPlayer(playerId) {
+        this.drawTableau(playerId);
+        this.drawBar(playerId);
+    }
 }
