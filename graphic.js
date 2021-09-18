@@ -1,4 +1,8 @@
 class Graphic {
+	
+	constructor() {
+		this.colors = ['red', 'pink', 'green', 'blue', 'yellow', 'purple', 'white'];
+	}
     
     getDisplay() {
         return document.getElementById("display");
@@ -63,9 +67,22 @@ class Graphic {
         let className = 'schaufenster';
         schaufenster.id = className + playerId;
         schaufenster.className = className
-		schaufenster.innerHTML = 'schaufenster';
+		// schaufenster.innerHTML = 'schaufenster';
         this.getArea(playerId).append(schaufenster);
+		for(let i = 0; i < this.colors.length; i++) {
+			let color = this.colors[i];
+			this.drawSchaufensterCard(playerId, color);
+		}
     }
+	
+	drawSchaufensterCard(playerId, color) {
+		let card = document.createElement('div');
+		let className = 'schaufenster-card card-' + color;
+		card.className = className;
+		card.id = className + playerId + color;
+		card.innerHTML = 0;
+		document.getElementById('schaufenster' + playerId).append(card);
+	}
     
     updateSchaufenster(playerId) {}
 
