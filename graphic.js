@@ -48,17 +48,20 @@ class Graphic {
     }
     
     updateSchaufenster(playerId) {}
+
     drawCoins(playerId) {
         let coins = document.createElement('div');
         let className = 'coins';
+        coins.className = className;
         coins.id = className + playerId;
         this.getBar(playerId).append(coins);  
     }
     
-    updateCoins(playerId) {}
+    updateCoins(playerId, newValue) {}
     
     drawPlayer(playerId) {
         this.drawTableau(playerId);
         this.drawBar(playerId);
+        this.drawCoins(playerId);
     }
 }
