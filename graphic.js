@@ -29,11 +29,11 @@ class Graphic {
 		}
     }
 	
-	drawTresorCard(playerId, xPos, yPos) {
+	drawTresorCard(playerId, , cardNum, xPos, yPos) {
 		let card = document.createElement('div');
 		let className = 'tresor-card';
 		card.className = className;
-		card.id = className + playerId;
+		card.id = className + playerId+cardNum;
 		card.style.left = xPos + 'px';
 		card.style.bottom = yPos + 'px';
 		document.getElementById('tresor' + playerId).append(card);
