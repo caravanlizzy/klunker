@@ -1,0 +1,32 @@
+body {
+    padding: 20px;
+}
+
+#display {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    
+}
+
+.tableau {
+    width: 550px;
+    height: 300px;
+    border: solid #a9a9a9 1px;
+    margin: 7px;
+    border-radius: 7px;
+}
+
+.bar {
+    height: 80px;
+    width: 100%;
+    display: flex;
+}
+
+.coins {
+    width: 40%;
+    height: 100%;
+    padding: 5px;
+    border: 1px solid #bababa;
+}
