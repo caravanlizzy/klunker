@@ -20,8 +20,24 @@ class Graphic {
         let tresor = document.createElement('div');
         let className = 'tresor';
         tresor.id = className + playerId;
-        this.getTableau(playerId).append(tresor);
+		tresor.className = className;
+		tresor.innerHTML = 'tresor';
+		this.getArea(playerId).append(tresor);
+		let gap = 8;
+		for(let i = 0; i < 5; i++) {
+			this.drawTresorCard(playerId, gap*i, 1.5*gap*i);
+		}
     }
+	
+	drawTresorCard(playerId, xPos, yPos) {
+		let card = document.createElement('div');
+		let className = 'tresor-card';
+		card.className = className;
+		card.id = className + playerId;
+		card.style.left = xPos + 'px';
+		card.style.bottom = yPos + 'px';
+		document.getElementById('tresor' + playerId).append(card);
+	}
     
     drawBar(playerId) {
         let bar = document.createElement('div');
@@ -38,13 +54,17 @@ class Graphic {
         return document.getElementById('bar' + playerId);
     }
     
-    updateTresor(playerId, cards) {}
+    updateTresor(playerId, cards) {
+		
+	}
     
     drawSchaufenster(playerId) {
         let schaufenster = document.createElement('div');
         let className = 'schaufenster';
         schaufenster.id = className + playerId;
-        this.getTableau(playerId).append(schaufenster);
+        schaufenster.className = className
+		schaufenster.innerHTML = 'schaufenster';
+        this.getArea(playerId).append(schaufenster);
     }
     
     updateSchaufenster(playerId) {}
@@ -54,14 +74,30 @@ class Graphic {
         let className = 'coins';
         coins.className = className;
         coins.id = className + playerId;
-        this.getBar(playerId).append(coins);  
+		coins.innerHTML = 'coins';		
+		this.getArea(playerId).append(coins);
     }
     
     updateCoins(playerId, newValue) {}
+	
+	drawActionArea(playerId) {
+		let area = document.createElement('div');
+        let className = 'action-area';
+        area.className = className;
+        area.id = className + playerId;
+		this.getTableau(playerId).append(area);
+	}
+	
+	getArea(playerId) {
+		return document.getElementById('action-area' + playerId);
+	}
     
     drawPlayer(playerId) {
         this.drawTableau(playerId);
         this.drawBar(playerId);
+		this.drawActionArea(playerId);
+		this.drawSchaufenster(playerId);
+		this.drawTresor(playerId);
         this.drawCoins(playerId);
     }
 }
