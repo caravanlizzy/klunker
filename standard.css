@@ -15,8 +15,8 @@ body {
 }
 
 .tableau {
-    width: 900px;
-    height: 450px;
+    width: 600px;
+    height: 300px;
     border: solid #bababa 2px;
     margin: 7px;
     border-radius: 7px;
@@ -36,10 +36,14 @@ body {
 }
 
 .schaufenster {
-    width: 62%;
+    width: 59%;
     height: 100%;
-    padding: 5px;
     border-right: 1px solid #bababa;	
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
 }
 
 .coins {
@@ -49,7 +53,7 @@ body {
 }
 
 .tresor {
-	width: 23%;
+	width: 26%;
     height: 100%;
     padding: 5px;
     border-right: 1px solid #bababa;
@@ -57,13 +61,46 @@ body {
 }
 
 .tresor-card {
-	width: 80px;
-    height: 120px;
+	width: 60px;
+    height: 90px;
     border: 1px solid black;
 	position: absolute;
 	margin: 10px;
 	border-radius: 1px;
 	/* display: none; */
 	background-color: red;
+}
+
+.schaufenster-card {
+	width: 60px;
+	height: 90px;
+	margin: 0 10px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 30px;
+	border-radius: 2px;
+}
+
+.card-red {
+	background-color: red;
+}
+.card-pink{
+	background-color: pink;
+}
+.card-green {
+	background-color: green;
+}
+.card-blue {
+	background-color: blue;
+}
+.card-yellow {
+	background-color: yellow;
+}
+.card-purple {
+	background-color: purple;
+}
+.card-white {
+	background-color: grey;
 }
 
