@@ -9,6 +9,7 @@ let graphic = new Graphic();
 graphic.drawPlayer(0);
 graphic.drawPlayer(1);
 graphic.drawPlayer(2);
+graphic.drawPlayer(3);
 // game.setupGame();
 // game.doTresor("red");
 // game.doTresor("pink");

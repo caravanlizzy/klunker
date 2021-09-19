@@ -17,26 +17,35 @@ body {
 .tableau {
     width: 600px;
     height: 300px;
-    border: solid #bababa 2px;
+    border: solid #bababa 3px;
     margin: 7px;
     border-radius: 7px;
 }
 
 .bar {
-    height: 28%;
+    height: 25%;
     width: 100%;
     display: flex;
+	justify-content: space-between;
+	background-color: #FBE4A4;
+	/* border-top-left-radius: 2px; */
+	/* border-top-right-radius: 2px; */
 	border-bottom: 1px solid #bababa;
+}
+
+.name-field {
+	padding: 7px;
+	color: #454545;
 }
 
 .action-area {
 	width: 100%;
-	height: 72%;
+	height: 75%;
 	display: flex;
 }
 
-.schaufenster {
-    width: 59%;
+.tresor {
+    width: 65%;
     height: 100%;
     border-right: 1px solid #bababa;	
 	display: flex;
@@ -49,21 +58,29 @@ body {
 .coins {
     width: 15%;
     height: 100%;
-    padding: 5px;
+    padding: 7px;
+	align-self: flex-end;
+	/* border: 1px solid black; */
+	text-align: center;
+}
+.coin {
+	padding: 2px;
+	font-size: 40px;
 }
 
-.tresor {
-	width: 26%;
+.schaufenster {
+	width: 35%;
     height: 100%;
     padding: 5px;
-    border-right: 1px solid #bababa;
+    /* border-right: 1px solid #bababa; */
 	position: relative;
+	color: #454545;
 }
 
-.tresor-card {
+.schaufenster-card {
 	width: 60px;
     height: 90px;
-    border: 1px solid black;
+    border: 2px solid black;
 	position: absolute;
 	margin: 10px;
 	border-radius: 1px;
@@ -71,7 +88,7 @@ body {
 	background-color: red;
 }
 
-.schaufenster-card {
+.tresor-card {
 	width: 60px;
 	height: 90px;
 	margin: 0 10px;
@@ -79,6 +96,7 @@ body {
 	align-items: center;
 	justify-content: center;
 	font-size: 30px;
+	border: 4px solid black;
 	border-radius: 2px;
 }
 
@@ -87,22 +105,23 @@ body {
     height: 15px;
     justify-content: center;
     display: flex;
+	color: #454545;
 }
 
 .card-red {
-	background-color: red;
+	background-color: #E92C2C;
 }
 .card-pink{
-	background-color: pink;
+	background-color: #D42BA8;
 }
 .card-green {
-	background-color: green;
+	background-color: #0E942E;
 }
 .card-blue {
-	background-color: blue;
+	background-color: #2B389C;
 }
 .card-yellow {
-	background-color: yellow;
+	background-color:#FFEA2B;
 }
 .card-purple {
 	background-color: purple;
