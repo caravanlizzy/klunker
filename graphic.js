@@ -25,12 +25,12 @@ class Graphic {
         let className = 'tresor';
         tresor.id = className + playerId;
 		tresor.className = className;
-		tresor.innerHTML = 'tresor';
 		this.getArea(playerId).append(tresor);
 		let gap = 8;
 		for(let i = 0; i < 5; i++) {
-			this.drawTresorCard(playerId, i, gap*i, 1.5*gap*i);
+			this.drawTresorCard(playerId, i, gap*i, 1.4*gap*i);
 		}
+		this.drawTextBar(tresor, playerId, 'Schaufenster');
     }
 	
 	drawTresorCard(playerId, cardNum, xPos, yPos) {
@@ -42,6 +42,15 @@ class Graphic {
 		card.style.bottom = yPos + 'px';
 		document.getElementById('tresor' + playerId).append(card);
 	}
+
+	drawTextBar(parent, playerId, text) {
+        let textBar = document.createElement('div');
+        let className = 'text-bar';
+        textBar.className = className;
+        textBar.id = className + playerId;
+        textBar.innerHTML = text;
+        parent.append(textBar);
+    }
     
     drawBar(playerId) {
         let bar = document.createElement('div');
@@ -62,13 +71,14 @@ class Graphic {
 		
 	}
     
-    drawSchaufenster(playerId) {
+    drawSchaufenster(playerId) { //schaufenster and tresor should be interchanged, realized at 90%, too lazy
         let schaufenster = document.createElement('div');
         let className = 'schaufenster';
         schaufenster.id = className + playerId;
         schaufenster.className = className
 		// schaufenster.innerHTML = 'schaufenster';
         this.getArea(playerId).append(schaufenster);
+        this.drawTextBar(schaufenster, playerId, 'Tresor');
 		for(let i = 0; i < this.colors.length; i++) {
 			let color = this.colors[i];
 			this.drawSchaufensterCard(playerId, color);
@@ -91,7 +101,6 @@ class Graphic {
         let className = 'coins';
         coins.className = className;
         coins.id = className + playerId;
-		coins.innerHTML = 'coins';		
 		this.getArea(playerId).append(coins);
     }
     
