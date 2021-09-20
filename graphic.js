@@ -26,51 +26,7 @@ class Graphic {
         schaufenster.id = className + playerId;
 		schaufenster.className = className;
 		this.getArea(playerId).append(schaufenster);
-
 		this.drawTextBar(schaufenster, playerId, 'Schaufenster');
-		// for(let i = 0; i < 7; i++) {
-			// this.drawSchaufensterCard(playerId, 'blue', gap*i, 1.4*gap*i);
-		// }
-    }
-	
-	drawSchaufensterCard(playerId, color, xPos, yPos) {
-		let card = document.createElement('div');
-		let className = 'schaufenster-card';
-		card.className = className + ' card-' + color;
-		card.style.left = xPos + 'px';
-		card.style.bottom = yPos + 'px';
-		document.getElementById('schaufenster' + playerId).append(card);
-	}
-
-	drawTextBar(parent, playerId, text) {
-        let textBar = document.createElement('div');
-        let className = 'text-bar';
-        textBar.className = className;
-        textBar.id = className + playerId;
-        textBar.innerHTML = text;
-        parent.append(textBar);
-    }
-    
-    drawBar(playerId) {
-        let bar = document.createElement('div');
-        let className = 'bar';
-        bar.className = className;
-        bar.id = className + playerId;
-        this.getTableau(playerId).append(bar);
-    }
-    
-    drawName(playerId, name) {
-		let nameField = document.createElement('div');
-		let className = 'name-field';
-		nameField.className = className;
-		nameField.id = className + playerId;
-		nameField.innerHTML = name;
-		document.getElementById('bar' + playerId).append(nameField);
-	}
-
-    
-    getBar(playerId) {
-        return document.getElementById('bar' + playerId);
     }
     
     updateSchaufenster(playerId, cards) {
@@ -84,8 +40,17 @@ class Graphic {
 			this.drawSchaufensterCard(playerId, card, gap*i, 1.4*gap*i)
 		}
 	}
-    
-    drawTresor(playerId) { //schaufenster and tresor should be interchanged, realized at 90%, too lazy
+	
+	drawSchaufensterCard(playerId, color, xPos, yPos) {
+		let card = document.createElement('div');
+		let className = 'card';
+		card.className = className + ' stacking-card card-' + color;
+		card.style.left = xPos + 'px';
+		card.style.bottom = yPos + 'px';
+		document.getElementById('schaufenster' + playerId).append(card);
+	}
+	
+    drawTresor(playerId) {
         let tresor = document.createElement('div');
         let className = 'tresor';
         tresor.id = className + playerId;
@@ -100,7 +65,7 @@ class Graphic {
 	
 	drawTresorCard(playerId, color) {
 		let card = document.createElement('div');
-		let className = 'tresor-card';
+		let className = 'card';
 		card.className = className + ' card-' + color;
 		card.id = className + playerId + color;
 		card.innerHTML = 0;
@@ -110,7 +75,59 @@ class Graphic {
     updateTresor(playerId, cards) {
 
 	}
+	
+    drawBar(playerId) {
+        let bar = document.createElement('div');
+        let className = 'bar';
+        bar.className = className;
+        bar.id = className + playerId;
+        this.getTableau(playerId).append(bar);
+    }
+    
+    getBar(playerId) {
+        return document.getElementById('bar' + playerId);
+    }
 
+	drawTextBar(parent, playerId, text) {
+        let textBar = document.createElement('div');
+        let className = 'text-bar';
+        textBar.className = className;
+        textBar.id = className + playerId;
+        textBar.innerHTML = text;
+        parent.append(textBar);
+    }
+    
+    drawName(playerId, name) {
+		let nameField = document.createElement('div');
+		let className = 'name-field';
+		nameField.className = className;
+		nameField.id = className + playerId;
+		nameField.innerHTML = name;
+		document.getElementById('bar' + playerId).append(nameField);
+	}
+	
+	
+    drawHandCards(playerId, parent) {
+        for(let i = 0; i < 6; i++) {
+            let card= document.createElement('div');
+            let className = 'card';
+            card.className = className;
+            card.id = className + playerId + 'c' + i;
+            parent.append(card);
+        }
+    }
+    
+	drawHand(playerId) {
+        let hand = document.createElement('div');
+        let handContainer = document.createElement('div');
+        handContainer.className = 'hand-container';
+        hand.className = 'hand';
+        this.getBar(playerId).append(handContainer);
+        this.drawTextBar(handContainer, playerId, 'Hand');
+        handContainer.append(hand);
+        this.drawHandCards(playerId, hand);
+    }
+    
     drawCoins(playerId) {
         let coins = document.createElement('div');
 		let coin = document.createElement('div');
@@ -145,6 +162,7 @@ class Graphic {
         this.drawTableau(playerId);
         this.drawBar(playerId);
 		this.drawName(playerId, 'Player ' + playerId);
+        this.drawHand(playerId);
 		this.drawActionArea(playerId);
 		this.drawTresor(playerId);		
 		this.drawSchaufenster(playerId);
