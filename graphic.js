@@ -158,10 +158,13 @@ class Graphic {
 		return document.getElementById('action-area' + playerId);
 	}
     
-    drawPlayer(playerId) {
+    drawPlayer(playerId, name = '') {
         this.drawTableau(playerId);
         this.drawBar(playerId);
-		this.drawName(playerId, 'Player ' + playerId);
+        if(name == '') {
+            name = 'Player ' + playerId
+        }
+		this.drawName(playerId, name);
         this.drawHand(playerId);
 		this.drawActionArea(playerId);
 		this.drawTresor(playerId);		

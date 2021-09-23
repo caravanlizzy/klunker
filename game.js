@@ -43,6 +43,7 @@ class Game {
         this.players = [];
         this.pile = [];
         this.tresorPasses = [];
+        this.graphic = new Graphic();
     }
 
     runGame() {
@@ -137,6 +138,7 @@ class Game {
         let id = this.players.length;
         let player = new Player(name, id);
         this.players.push(player);
+        this.graphic.drawPlayer(id);
     }
 
     getActiveplayer() {
