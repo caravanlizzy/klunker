@@ -129,10 +129,7 @@ class Graphic {
     }
     
     updateHandCard(playerId, cardSpot, card) {
-        console.log(cardSpot);
-        console.log(playerId);
         let c = document.getElementById('card' + playerId + 'c' + cardSpot);
-        console.log(c);
         c.className = 'card card-' + card;
     }
     
@@ -151,7 +148,7 @@ class Graphic {
     }
     
     updateCoins(playerId, newValue) {
-		document.getElementById('coins' + playerId).innerHTML = newValue;
+		document.getElementById('coin' + playerId).innerHTML = newValue;
 	}
 	
 	drawActionArea(playerId) {

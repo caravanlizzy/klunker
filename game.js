@@ -13,7 +13,7 @@ class Player {
     constructor(name, id) {
         this.id = id;
         this.name = name;
-        this.coins = 0;
+        this.coins = 1;
         this.hand = [];
         this.schaufenster = [];
         this.cleanTresor();
@@ -74,6 +74,7 @@ class Game {
     }
 
     schaufensterPhase() {
+        console.log("SCHAUFENSTERPHASE!")
         for(let i = 0; i < this.players.length; i++) {
             let player = this.getActiveplayer();
             this.playRandomschaufenster();
@@ -83,6 +84,7 @@ class Game {
     }
 
     tresorPhase() {
+        console.log("TRESORPHASE!")
         console.log(this.getSchaufenster());
         while(this.tresorPasses.length < this.players.length) {
 //             alert('Tresorphase' + this.counter);
@@ -97,20 +99,23 @@ class Game {
                 this.doTresor(player.hand[cardPos]);
                 player.hand.splice(cardPos, 1);
             }
-            console.log(this.getActiveplayer().tresor);
             this.nextPlayer();
         }
     }
     
     kaufPhase() {
+        console.log("KAUFPHASE!")
         for (let i = 0; i < this.players.length; i++) {
+            console.log("do kaufs");
             let player = this.getActiveplayer();
             let kauf = true;
             if (player.schaufenster.length == 0) {
                 kauf = this.decideKaufornot();
             }
             if (kauf) {
-                this.doKauf()
+                let sellerId = this.getRandomInt(this.players.length);
+                let k = this.doKauf(sellerId);
+                console.log('kauf: ' + k)
             }
             this.nextPlayer();
         }
@@ -136,6 +141,7 @@ class Game {
 
     nextPlayer () {
         this.activePlayer = (this.activePlayer + 1) % this.players.length;
+        console.log('It is player ' + this.activePlayer + ' turn now.');
     }
 
     nextPhase() {
@@ -147,6 +153,7 @@ class Game {
         let player = new Player(name, id);
         this.players.push(player);
         this.graphic.drawPlayer(id);
+        this.graphic.updateCoins(id, player.coins);
     }
 
     getActiveplayer() {
@@ -171,10 +178,11 @@ class Game {
 
 	playRandomschaufenster() {
         let hand = this.getHand();
-        let amount = this.getRandomInt(6, 1);
+        let amount = this.getRandomInt(hand.length, 1);
         for (let i = 0; i < amount; i++) {
-            let randInt = this.getRandomInt(6 - 1);
+            let randInt = this.getRandomInt(hand.length - 1);
             let card = hand.splice(randInt, 1)[0];
+            console.log('Player ' + this.getActiveplayer().id + ' adds ' + card + ' to its Schaufenster');
             this.getSchaufenster().push(card);
             this.graphic.updateHandCard(this.getActiveplayer().id, randInt, 'white');
         }
@@ -214,13 +222,21 @@ class Game {
 //         }
         let seller = this.players[sellerId];
         if(buyer.coins == 0 && buyer.id != sellerId) {
+            console.log("Please buy your own Schaufenster!")
             return false;
         }
+        console.log('ids: ', seller.id, buyer.id);
+        console.log('coins: ' + buyer.coins)
         let tresor = this.getTresor();
         let schaufenster = this.getSchaufenster();
-        buyer.schaufenster = this.addTresor(tresor, schaufenster);
-        buyer.cleanTresor();
-        pay(buyer, seller);
+        let sellerSchaufenster = this.players[seller.id].schaufenster;
+        for(let i = 0; i < sellerSchaufenster.length; i++) {
+            let card = sellerSchaufenster[i];
+            buyer.tresor[card] += 1;
+            this.graphic.updateTresorCard(buyer.id, card, tresor[card]);
+        }
+        this.pay(buyer, seller);
+        this.sellAll();
         return true;
 	}
 	
@@ -259,7 +275,7 @@ class Game {
     }
 
 
-	addTresor(tresor, schaufenster) {
+	addSchaufenster(tresor, schaufenster) {
         let colors = Object.keys(tresor);
         for (let c = 0; c < colors.length; c++) {
             let color = colors[c];
@@ -274,6 +290,8 @@ class Game {
     pay(buyer, seller) {
         buyer.coins -= 1;
         seller.coins += 1;
+        this.graphic.updateCoins(buyer.id, buyer.coins);
+        this.graphic.updateCoins(seller.id, seller.coins);
     }
 
 	sellAll() {
@@ -285,6 +303,7 @@ class Game {
 	}
 
 	sellCards(cardType) {
+        console.log('Selling ' + cardType);
 		let tresor = this.getTresor();
 		let diversity = this.getCardDiversity(tresor);
 		console.log(tresor, diversity);
@@ -321,6 +340,7 @@ class Game {
 	}
 
     doRundenende() {
+        console.log("RUNDENENDE");
         if(this.checkOver()) {
             this.state = 2;
         }
