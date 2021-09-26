@@ -54,7 +54,7 @@ class Game {
     }
     
     runRound() {
-        this.counter =+ 1;
+        this.counter += 1;
         this.schaufensterPhase();
         this.tresorPhase();
         this.kaufPhase();
@@ -85,13 +85,11 @@ class Game {
 
     tresorPhase() {
         console.log("TRESORPHASE!")
-        console.log(this.getSchaufenster());
         while(this.tresorPasses.length < this.players.length) {
 //             alert('Tresorphase' + this.counter);
             let player = this.getActiveplayer();
+            console.log(player.name + ' has ' + player.hand.length + ' cards in its hand.');
             if (player.hand.length == 0 || this.randomPasstresor()) {
-                console.log(player.hand);
-                console.log('sends pass in tresorphase');
                 this.doTresor('pass');
             }
             else {
@@ -106,16 +104,22 @@ class Game {
     kaufPhase() {
         console.log("KAUFPHASE!")
         for (let i = 0; i < this.players.length; i++) {
-            console.log("do kaufs");
             let player = this.getActiveplayer();
             let kauf = true;
             if (player.schaufenster.length == 0) {
                 kauf = this.decideKaufornot();
             }
             if (kauf) {
-                let sellerId = this.getRandomInt(this.players.length);
-                let k = this.doKauf(sellerId);
-                console.log('kauf: ' + k)
+                let kaufDone = false;
+                while (!kaufDone) {
+                    let sellerId = this.getRandomInt(this.players.length);
+                    kaufDone = this.doKauf(sellerId);
+                    if(kaufDone == 'endkauf') {
+                        break;
+                        console.log("Kauf ended vorzeitig.")
+                    }
+                }
+
             }
             this.nextPlayer();
         }
@@ -141,18 +145,15 @@ class Game {
 
     nextPlayer () {
         this.activePlayer = (this.activePlayer + 1) % this.players.length;
-        console.log('It is player ' + this.activePlayer + ' turn now.');
+//         console.log('It is ' + this.players[this.activePlayer].name + ' turn now.');
     }
 
-    nextPhase() {
-        this.currentphase = (this.currentPhase + 1) % this.players.length;
-    }
 
     addPlayer(name) {
         let id = this.players.length;
         let player = new Player(name, id);
         this.players.push(player);
-        this.graphic.drawPlayer(id);
+        this.graphic.drawPlayer(id, name);
         this.graphic.updateCoins(id, player.coins);
     }
 
@@ -182,7 +183,7 @@ class Game {
         for (let i = 0; i < amount; i++) {
             let randInt = this.getRandomInt(hand.length - 1);
             let card = hand.splice(randInt, 1)[0];
-            console.log('Player ' + this.getActiveplayer().id + ' adds ' + card + ' to its Schaufenster');
+            console.log(this.getActiveplayer().name + ' adds ' + card + ' to its Schaufenster');
             this.getSchaufenster().push(card);
             this.graphic.updateHandCard(this.getActiveplayer().id, randInt, 'white');
         }
@@ -199,34 +200,44 @@ class Game {
 		}
     }
     
+    clearSchaufenster(playerId) {
+        let player = this.players[playerId];
+        player.schaufenster = [];
+    }
+    
     doTresor(card) {
-        if (card == 'pass') {
-            this.tresorPasses.push(this.getActiveplayer());
+        let player = this.getActiveplayer();
+        if (this.tresorPasses.includes(player)) {
+            console.log(player.name + ' has already passed and is skipped.')
             return;
         }
-        if (this.tresorPasses.includes(this.getActiveplayer())) {
+        if (card == 'pass') {
+            console.log(player.name + ' passes for the tresorphase.')
+            this.tresorPasses.push(player);
             return;
         }
 		let tresor = this.getTresor();
 		tresor[card] += 1;
-        this.graphic.updateTresorCard(this.getActiveplayer().id, card, tresor[card]);
+        console.log(player.name + ' adds a ' + card + 'card to the Tresor.')
+        this.graphic.updateTresorCard(player.id, card, tresor[card]);
 		this.sellAll(tresor);
 	}
 	
     doKauf(sellerId) {
 		let buyer = this.getActiveplayer();
-//         if (!kauf) {
-//             this.setStartingplayer(buyer.id);
-//             console.log('endKauf')
-//             return true;
-//         }
         let seller = this.players[sellerId];
         if(buyer.coins == 0 && buyer.id != sellerId) {
             console.log("Please buy your own Schaufenster!")
             return false;
         }
-        console.log('ids: ', seller.id, buyer.id);
-        console.log('coins: ' + buyer.coins)
+        console.log(seller.name + 's Schaufenster is: ' + seller.schaufenster);
+        if(seller.schaufenster.length == 0) {
+            if(seller.id == buyer.id) {
+                return 'endkauf'
+            }
+            return false;
+        }
+        console.log(buyer.name  + ' buys schaufenster of ' + seller.name);
         let tresor = this.getTresor();
         let schaufenster = this.getSchaufenster();
         let sellerSchaufenster = this.players[seller.id].schaufenster;
@@ -235,6 +246,8 @@ class Game {
             buyer.tresor[card] += 1;
             this.graphic.updateTresorCard(buyer.id, card, tresor[card]);
         }
+        this.clearSchaufenster(seller.id);
+        this.graphic.updateSchaufenster(seller.id, seller.schaufenster);
         this.pay(buyer, seller);
         this.sellAll();
         return true;
@@ -260,6 +273,11 @@ class Game {
     }
 
     dealCards(){
+//         for(let i = 0; i < this.players.length; i++) {
+//             console.log(this.players[i].name + ' needs ' + (6 - this.players[i].hand.length) + 'cards.' );
+//         }
+//         console.log('pile length is: ' + this.pile.length);
+//         
         for (let i = 0; i < this.players.length; i++) {
             let player = this.players[i];
             for(let j = player.hand.length; j < 6; j++) {
@@ -268,24 +286,14 @@ class Game {
                 this.graphic.updateHandCard(player.id, j, card);
             }
         }
+//         console.log('pile length is: ' + this.pile.length);
+
     }
 
     shuffleStartingplayer(){
         this.activePlayer = Math.floor(Math.random() * this.players.length);
     }
 
-
-	addSchaufenster(tresor, schaufenster) {
-        let colors = Object.keys(tresor);
-        for (let c = 0; c < colors.length; c++) {
-            let color = colors[c];
-            let amount = tresor[color];
-            for (let i = 0; i < amount; i++) {
-                schaufenster.push(color);
-            }
-        }
-        return schaufenster;
-    }
 
     pay(buyer, seller) {
         buyer.coins -= 1;
@@ -302,18 +310,18 @@ class Game {
 		}
 	}
 
-	sellCards(cardType) {
-        console.log('Selling ' + cardType);
+	sellCards(card) {
 		let tresor = this.getTresor();
 		let diversity = this.getCardDiversity(tresor);
-		console.log(tresor, diversity);
-		if(tresor[cardType] > 3) {
+		if(tresor[card] > 3) {
 			let player = this.getActiveplayer();
 			let coins = Math.max(5-diversity, 1);
-			let returnCards = 4-coins;
+            console.log('Selling ' + card + ' for ' + coins);
+            let returnCards = 4-coins;
 			player.coins += coins;
-			player.tresor[cardType] -= 4;
-			this.pile[cardType] += returnCards;
+			player.tresor[card] -= 4;
+            this.graphic.updateTresorCard(player.id, card, player.tresor[card]);
+            this.returnCard(card,returnCards)
         }
 	}
 	
@@ -338,6 +346,12 @@ class Game {
 		})
 		return diversity;
 	}
+	
+	returnCard(card, amount = 1) {
+        for(let i = 0; i < amount; i++) {
+            this.pile.push(card);
+        }
+    }
 
     doRundenende() {
         console.log("RUNDENENDE");
@@ -350,7 +364,7 @@ class Game {
     }
     
     showResults() {
-        console.log('Game over!');
+        console.log('Game over after ' + this.counter + ' rounds.');
     }
 
     checkOver() {

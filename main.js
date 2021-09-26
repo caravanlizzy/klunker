@@ -1,8 +1,8 @@
 let game = new Game();
-game.addPlayer("p1");
-game.addPlayer("p2");
-game.addPlayer("p3");
-game.addPlayer("p4");
+game.addPlayer("Peter");
+game.addPlayer("Brigitte");
+game.addPlayer("Linda");
+game.addPlayer("Alina");
 game.runGame();
 // let graphic = new Graphic();
 // graphic.drawPlayer(0);
