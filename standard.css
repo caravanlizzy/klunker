@@ -83,8 +83,8 @@ body {
 	font-size: 50px;
     width: 65px;
     height: 65px;
-    background-color: gold;
-    border-radius: 100%;
+/*     background-color: gold; */
+/*     border-radius: 100%; */
 }
 
 .schaufenster {
@@ -157,7 +157,10 @@ body {
 .card-purple {
 	background-color: purple;
 }
-.card-white {
+.card-grey {
 	background-color: grey;
+}
+.card-white {
+    background-color: white;
 }
 

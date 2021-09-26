@@ -1,7 +1,7 @@
 class Graphic {
-	
+	//TODO: TRESOR: tile cards and print number just small. SCHAUFENSTER: make it look like schaufenster, HAND: reveal only own cards, PLAYER: show the buy state (1 2 3 4 5 6)
 	constructor() {
-		this.colors = ['red', 'pink', 'green', 'blue', 'yellow', 'purple', 'white'];
+		this.colors = ['red', 'pink', 'green', 'blue', 'yellow', 'purple', 'grey'];
 	}
     
     getDisplay() {
@@ -67,13 +67,13 @@ class Graphic {
 		let card = document.createElement('div');
 		let className = 'card';
 		card.className = className + ' card-' + color;
-		card.id = className + playerId + color;
+		card.id = 'tresor' + className + playerId + color;
 		card.innerHTML = 0;
 		document.getElementById('tresor' + playerId).append(card);
 	}
     
-    updateTresor(playerId, cards) {
-
+    updateTresorCard(playerId, color, value) {
+        document.getElementById('tresorcard' + playerId + color).innerHTML = value;
 	}
 	
     drawBar(playerId) {
@@ -126,6 +126,14 @@ class Graphic {
         this.drawTextBar(handContainer, playerId, 'Hand');
         handContainer.append(hand);
         this.drawHandCards(playerId, hand);
+    }
+    
+    updateHandCard(playerId, cardSpot, card) {
+        console.log(cardSpot);
+        console.log(playerId);
+        let c = document.getElementById('card' + playerId + 'c' + cardSpot);
+        console.log(c);
+        c.className = 'card card-' + card;
     }
     
     drawCoins(playerId) {

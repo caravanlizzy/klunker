@@ -5,7 +5,7 @@ const deck = {
     blue: 14,
     yellow: 12,
     purple: 14,
-    white: 15
+    grey: 15
 }
 
 
@@ -27,7 +27,7 @@ class Player {
             'blue' : 0,
             'yellow' : 0,
             'purple' : 0,
-            'white' : 0
+            'grey' : 0
         };
     }
 }
@@ -75,14 +75,21 @@ class Game {
 
     schaufensterPhase() {
         for(let i = 0; i < this.players.length; i++) {
+            let player = this.getActiveplayer();
             this.playRandomschaufenster();
+            this.graphic.updateSchaufenster(player.id, player.schaufenster);
+            this.nextPlayer();
         }
     }
 
     tresorPhase() {
+        console.log(this.getSchaufenster());
         while(this.tresorPasses.length < this.players.length) {
+//             alert('Tresorphase' + this.counter);
             let player = this.getActiveplayer();
-            if (player.hand.length == 0 || this.randomPasstresor) {
+            if (player.hand.length == 0 || this.randomPasstresor()) {
+                console.log(player.hand);
+                console.log('sends pass in tresorphase');
                 this.doTresor('pass');
             }
             else {
@@ -90,6 +97,7 @@ class Game {
                 this.doTresor(player.hand[cardPos]);
                 player.hand.splice(cardPos, 1);
             }
+            console.log(this.getActiveplayer().tresor);
             this.nextPlayer();
         }
     }
@@ -165,7 +173,10 @@ class Game {
         let hand = this.getHand();
         let amount = this.getRandomInt(6, 1);
         for (let i = 0; i < amount; i++) {
-            this.getSchaufenster().push(hand.splice(this.getRandomInt(6 - 1), 1)[0]);
+            let randInt = this.getRandomInt(6 - 1);
+            let card = hand.splice(randInt, 1)[0];
+            this.getSchaufenster().push(card);
+            this.graphic.updateHandCard(this.getActiveplayer().id, randInt, 'white');
         }
     }
 
@@ -183,12 +194,14 @@ class Game {
     doTresor(card) {
         if (card == 'pass') {
             this.tresorPasses.push(this.getActiveplayer());
+            return;
         }
         if (this.tresorPasses.includes(this.getActiveplayer())) {
             return;
         }
 		let tresor = this.getTresor();
 		tresor[card] += 1;
+        this.graphic.updateTresorCard(this.getActiveplayer().id, card, tresor[card]);
 		this.sellAll(tresor);
 	}
 	
@@ -234,7 +247,9 @@ class Game {
         for (let i = 0; i < this.players.length; i++) {
             let player = this.players[i];
             for(let j = player.hand.length; j < 6; j++) {
-                player.hand.push(this.pile.pop());
+                let card = this.pile.pop();
+                player.hand.push(card);
+                this.graphic.updateHandCard(player.id, j, card);
             }
         }
     }
